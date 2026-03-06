@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Bear Birthday</title>
+<style>
+  body { margin:0; overflow:hidden; background:#ffe4e1; }
+  #overlay { position:absolute; top:20px; width:100%; text-align:center; }
+  button { margin:10px; padding:10px 20px; font-size:1.2em; }
+  #message, #gift, #cakeScene { display:none; text-align:center; margin-top:20px; }
+  .balloon { position:absolute; width:40px; height:60px; border-radius:50%; }
+</style>
+</head>
+<body>
+<div id="overlay">
+  <div id="question">🧸 You are Haykoul?</div>
+  <button onclick="sayYes()">Yes</button>
+  <button>No</button>
+  <div id="message">Happy birthday my father!</div>
+  <div id="gift" onclick="openGift()">🎁 Tap to open</div>
+  <div id="cakeScene">
+    <audio id="music" src="birthday.mp3"></audio>
+    <div>🎂 Happy birthday my handsome father 🎂</div>
+    <div>✨ Garlands ✨</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+  // Load 3D bear
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const loader = new THREE.GLTFLoader();
+  loader.load('bear_model.glb', function(gltf){
+    scene.add(gltf.scene);
+    camera.position.z = 5;
+    animate();
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+
+  function sayYes(){
+    document.getElementById('message').style.display='block';
+    setTimeout(()=>{ document.getElementById('gift').style.display='block'; },1000);
+  }
+
+  function openGift(){
+    document.getElementById('gift').style.display='none';
+    document.getElementById('cakeScene').style.display='block';
+    document.getElementById('music').play();
+    // Balloons
+    for(let i=0;i<10;i++){
+      let b=document.createElement('div');
+      b.className='balloon';
+      b.style.left=Math.random()*100+'vw';
+      b.style.bottom='0';
+      b.style.background=['red','blue','green','yellow','pink'][i%5];
+      b.style.animation=`float ${3+Math.random()*3}s linear infinite`;
+      document.body.appendChild(b);
+    }
+  }
+</script>
+</body>
+</html>
